@@ -206,7 +206,7 @@
         async function loadEvent() {
             try {
                 const response = await fetch(
-                    `https://680e5ef90018a9cea033.fra.appwrite.run/exec?eventId=${EVENT_ID}`
+                    `http://680e5efa146a52dd182c.fra.appwrite.run/exec?eventId=${EVENT_ID}`
                 );
                 const event = await response.json();
 
@@ -248,7 +248,7 @@
             
             try {
                 const response = await fetch(
-                `https://680e5ef90018a9cea033.fra.appwrite.run/exec?eventId=${EVENT_ID}`
+                    `http://680e5efa146a52dd182c.fra.appwrite.run/exec?eventId=${EVENT_ID}`
                 ,
                     {
                         method: 'POST',
