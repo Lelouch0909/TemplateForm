@@ -213,42 +213,63 @@
         const EVENT_ID = new URLSearchParams(window.location.search).get('eventId');
 
         // Charger les données de l'événement
-        async function loadEvent() {
-            try {
-                const response = await fetch(
-                    `https://680e5efa146a52dd182c.fra.appwrite.run/exec?eventId=${EVENT_ID}`
-                );
-                const event = await response.json();
+            async function loadEvent() {
+        try {
+            const response = await fetch(
+                `https://680e5efa146a52dd182c.fra.appwrite.run/exec?eventId=${EVENT_ID}`
+            );
+            const event = await response.json();
 
-                // Afficher les données de l'événement
-                document.getElementById('eventTitle').textContent = event.name;
-                document.getElementById('eventCover').src = event.imageUrl;
-                document.getElementById('eventType').textContent = event.type;
-                
-                // Formater la date
-                const eventDate = new Date(event.startDateTime);
-                document.getElementById('eventDate').textContent = 
-                    eventDate.toLocaleDateString('fr-FR', { 
-                        weekday: 'long', 
-                        day: 'numeric', 
-                        month: 'long', 
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                
-                // Combiner le nom du lieu et l'adresse
-                document.getElementById('eventLocation').textContent = 
-                    `${event.placeName} à ${event.address}`;
-                
-                document.getElementById('eventDescription').textContent = event.description;
-            } catch (error) {
-                console.error("Erreur:", error);
-                document.getElementById('alertError').textContent = "Impossible de charger l'événement";
-                document.getElementById('alertError').style.display = 'block';
+            // Debug: Afficher la réponse complète dans la console
+            console.log("Réponse API:", event);
+
+            // Afficher les données de l'événement
+            document.getElementById('eventTitle').textContent = event.title || "Titre non disponible";
+            
+            if (event.coverImageUrl) {
+                document.getElementById('eventCover').src = event.coverImageUrl;
+                document.getElementById('eventCover').alt = event.title || "Image de l'événement";
             }
-        }
+            
+            // Afficher le type si disponible
+            if (event.tye) {
+                document.getElementById('eventType').textContent = event.tye;
+                document.getElementById('eventType').style.display = 'inline-block';
+            } else {
+                document.getElementById('eventType').style.display = 'none';
+            }
+            
+            // Formater la date
+            if (event.date) {
+                try {
+                    const eventDate = new Date(event.date);
+                    document.getElementById('eventDate').textContent = 
+                        eventDate.toLocaleDateString('fr-FR', { 
+                            weekday: 'long', 
+                            day: 'numeric', 
+                            month: 'long', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                } catch (e) {
+                    console.error("Erreur format date:", e);
+                    document.getElementById('eventDate').textContent = "Date non disponible";
+                }
+            }
+            
+            // Afficher la localisation
+            document.getElementById('eventLocation').textContent = event.location || "Lieu non précisé";
+            
+            // Description
+            document.getElementById('eventDescription').textContent = event.description || "Description non disponible";
 
+        } catch (error) {
+            console.error("Erreur:", error);
+            document.getElementById('alertError').textContent = "Impossible de charger l'événement";
+            document.getElementById('alertError').style.display = 'block';
+        }
+    }
         // Gestion de l'inscription
         document.getElementById('registerButton').addEventListener('click', async () => {
             const email = document.getElementById('emailInput').value;
